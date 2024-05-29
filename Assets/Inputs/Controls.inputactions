@@ -17,45 +17,45 @@
             ],
             "bindings": [
                 {
-                    "name": "WS",
-                    "id": "b761ae8a-31d8-4de2-9f22-345cdf649ec5",
-                    "path": "1DAxis",
+                    "name": "",
+                    "id": "5122b14a-a4aa-4d8a-afb5-f394b1939046",
+                    "path": "<Keyboard>/space",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard",
                     "action": "Jump",
-                    "isComposite": true,
+                    "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "negative",
-                    "id": "9b2c183d-412f-484f-9eb9-843d21f55130",
-                    "path": "<Keyboard>/s",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboards",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "positive",
-                    "id": "373df0af-98f7-4b99-98ad-5178b0eb418a",
+                    "name": "",
+                    "id": "f73964b1-2eb0-4b40-a647-ba4684535543",
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboards",
+                    "groups": "Keyboard",
                     "action": "Jump",
                     "isComposite": false,
-                    "isPartOfComposite": true
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "69ff6e3f-174c-4cfe-9f9e-2f487e1bd839",
+                    "path": "<Keyboard>/upArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }
     ],
     "controlSchemes": [
         {
-            "name": "Keyboards",
-            "bindingGroup": "Keyboards",
+            "name": "Keyboard",
+            "bindingGroup": "Keyboard",
             "devices": [
                 {
                     "devicePath": "<Keyboard>",

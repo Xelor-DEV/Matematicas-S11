@@ -2,45 +2,80 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
-    public float upForce = 200f; // Fuerza de impulso hacia arriba
-    public float downForce = 200f; // Fuerza de impulso hacia abajo
-    private Rigidbody rb; // Referencia al componente Rigidbody del jugador
-    private Vector2 direction;
-
-    void Start()
+    [SerializeField] private float jumpForce;
+    [SerializeField] private float gravity;
+    [SerializeField] private float rotationSpeed = 100f;
+    private bool isFalling = false;
+    private Rigidbody _compRigidBody;
+    private void Awake()
     {
-        rb = GetComponent<Rigidbody>(); // Obtenemos el componente Rigidbody
-    }
-    public void SetDirection(InputAction.CallbackContext context)
-    {
-        direction = context.ReadValue<Vector2>();
-    }
-    void Update()
-    {
-        if (Input.GetButtonDown("Jump")) // Si el jugador presiona el botón de salto (espacio por defecto)
-        {
-            rb.AddForce(Vector3.up * upForce); // Aplicamos una fuerza hacia arriba
-        }
-
-        if (Input.GetButtonDown("Down")) // Si el jugador presiona el botón de abajo (podrías configurarlo en los Input Settings)
-        {
-            rb.AddForce(Vector3.down * downForce); // Aplicamos una fuerza hacia abajo
-        }
-
-        // Rotación del personaje basada en su momentum
-        float angle = Mathf.Lerp(0, 90, rb.velocity.y / 20);
-        transform.rotation = Quaternion.Euler(new Vector3(0, 0, -angle));
+        _compRigidBody = GetComponent<Rigidbody>();
     }
     private void FixedUpdate()
     {
+        _compRigidBody.AddForce(Vector3.down * gravity);
+
+        if (isFalling == true)
+        {
+            transform.Rotate(0, 0, rotationSpeed * Time.fixedDeltaTime);
+        }
+        else
+        {
+            if (transform.eulerAngles.z < 80 || transform.eulerAngles.z > 270)
+            {
+                transform.Rotate(0, 0, -rotationSpeed * Time.fixedDeltaTime);
+            }
+        }
     }
 
-    void OnCollisionEnter(Collision collision)
+    public void Jump(InputAction.CallbackContext context)
     {
-        if (collision.gameObject.CompareTag("Obstacle")) // Si chocamos con un obstáculo
+        if (context.performed == true)
         {
-            rb.AddForce(Vector3.left * 100f); // Aplicamos una fuerza hacia la izquierda
-            rb.AddForce(Vector3.up * 50f); // Aplicamos una pequeña fuerza hacia arriba para empujar al pájaro por donde debería pasar
+            _compRigidBody.velocity = new Vector3(_compRigidBody.velocity.x, 0, _compRigidBody.velocity.z);
+            _compRigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isFalling = false;
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("PipeDown") || other.CompareTag("PipeUp"))
+        {
+            _compRigidBody.AddForce(Vector3.left * jumpForce,ForceMode.Impulse);
+        }
+        else if (other.CompareTag("PlayerEliminator"))
+        {
+            GameManager.Instance.LoadScene("GameOver");
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("PipeDown"))
+        {
+            _compRigidBody.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            _compRigidBody.AddForce(Vector3.left * jumpForce, ForceMode.Impulse);
+        }
+        else if (other.CompareTag("PipeUp"))
+        {
+            _compRigidBody.AddForce(Vector3.down * jumpForce, ForceMode.Impulse);
+            _compRigidBody.AddForce(Vector3.left * jumpForce, ForceMode.Impulse);
+        }
+       
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        _compRigidBody.velocity = new Vector3(0, 0, 0);
+    }
+    private void Update()
+    {
+        float angle = transform.rotation.eulerAngles.z;
+        if (_compRigidBody.velocity.y > 0)
+        {
+            isFalling = false;
+        }
+        else if (_compRigidBody.velocity.y < 0)
+        {
+            isFalling = true;
         }
     }
 }
